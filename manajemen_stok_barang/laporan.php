@@ -3,52 +3,44 @@
 
 <h2>Laporan Transaksi</h2>
 
-<div class="row mb-3">
-    <div class="col-md-4">
-        <form method="GET">
-            <div class="input-group">
-                <input type="date" name="tanggal" class="form-control">
-                <button class="btn btn-primary" type="submit">Filter</button>
-            </div>
-        </form>
-    </div>
-</div>
+<form method="get">
+    <label for="tanggal">Filter Tanggal:</label>
+    <input type="date" id="tanggal" name="tanggal">
+    <button type="submit">Filter</button>
+</form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID Transaksi</th>
-            <th>Tanggal</th>
-            <th>Barang</th>
-            <th>Jenis</th>
-            <th>Jumlah</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        $where = "";
-        if (isset($_GET['tanggal'])) {
-            $tanggal = $_GET['tanggal'];
-            $where = "WHERE DATE(tanggal) = '$tanggal'";
-        }
-        
-        $sql = "SELECT t.*, b.nama_barang 
-                FROM Transaksi t
-                JOIN Barang b ON t.id_barang = b.id_barang
-                $where
-                ORDER BY t.tanggal DESC";
-        $result = $conn->query($sql);
-        while ($row = $result->fetch_assoc()):
-        ?>
-        <tr>
-            <td><?= $row['id_transaksi'] ?></td>
-            <td><?= $row['tanggal'] ?></td>
-            <td><?= $row['nama_barang'] ?></td>
-            <td><?= $row['jenis'] ?></td>
-            <td><?= $row['jumlah'] ?></td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
+<table>
+    <tr>
+        <th>ID Transaksi</th>
+        <th>Tanggal</th>
+        <th>Barang</th>
+        <th>Jenis</th>
+        <th>Jumlah</th>
+    </tr>
+    <?php
+    $where = "";
+    if (isset($_GET['tanggal'])) {
+        $tanggal = $_GET['tanggal'];
+        $where = "WHERE DATE(tanggal) = '$tanggal'";
+    }
+    
+    $sql = "SELECT t.*, b.nama_barang 
+            FROM transaksi t
+            JOIN barang b ON t.id_barang = b.id_barang
+            $where
+            ORDER BY t.tanggal DESC";
+    $result = mysqli_query($conn, $sql);
+    
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td>" . $row['id_transaksi'] . "</td>";
+        echo "<td>" . $row['tanggal'] . "</td>";
+        echo "<td>" . $row['nama_barang'] . "</td>";
+        echo "<td>" . $row['jenis'] . "</td>";
+        echo "<td>" . $row['jumlah'] . "</td>";
+        echo "</tr>";
+    }
+    ?>
 </table>
 
 <?php include 'includes/footer.php'; ?>

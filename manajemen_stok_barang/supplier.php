@@ -2,67 +2,52 @@
 <?php include 'config/db.php'; ?>
 
 <h2>Data Supplier</h2>
-<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSupplierModal">Tambah Supplier</button>
 
-<!-- Supplier Table -->
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nama Supplier</th>
-            <th>Alamat</th>
-            <th>Telepon</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        $sql = "SELECT * FROM Supplier";
-        $result = $conn->query($sql);
-        while ($row = $result->fetch_assoc()):
-        ?>
-        <tr>
-            <td><?= $row['id_supplier'] ?></td>
-            <td><?= $row['nama_supplier'] ?></td>
-            <td><?= $row['alamat'] ?></td>
-            <td><?= $row['telepon'] ?></td>
-            <td>
-                <a href="#" class="btn btn-warning btn-sm">Edit</a>
-                <a href="#" class="btn btn-danger btn-sm">Hapus</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
+<!-- Form Tambah Supplier -->
+<form action="process/add_supplier.php" method="post">
+    <h3>Tambah Supplier Baru</h3>
+    <label for="nama_supplier">Nama Supplier:</label>
+    <input type="text" id="nama_supplier" name="nama_supplier" required>
+    
+    <label for="alamat">Alamat:</label>
+    <textarea id="alamat" name="alamat" required></textarea>
+    
+    <label for="telepon">Telepon:</label>
+    <input type="text" id="telepon" name="telepon" required>
+    
+    <button type="submit">Tambah Supplier</button>
+</form>
+
+<!-- Tabel Daftar Supplier -->
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nama Supplier</th>
+        <th>Alamat</th>
+        <th>Telepon</th>
+        <th>Aksi</th>
+    </tr>
+    <?php
+    $sql = "SELECT * FROM supplier";
+    $result = mysqli_query($conn, $sql);
+    
+    if (mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            echo "<tr>";
+            echo "<td>" . $row['id_supplier'] . "</td>";
+            echo "<td>" . $row['nama_supplier'] . "</td>";
+            echo "<td>" . $row['alamat'] . "</td>";
+            echo "<td>" . $row['telepon'] . "</td>";
+            echo "<td>
+                    <a href='edit_supplier.php?id=" . $row['id_supplier'] . "' class='btn btn-warning'>Edit</a>
+                    <a href='process/delete_supplier.php?id=" . $row['id_supplier'] . "' class='btn btn-danger' onclick='return confirm(\"Yakin ingin menghapus?\")'>Hapus</a>
+                  </td>";
+            echo "</tr>";
+        }
+    } else {
+        echo "<tr><td colspan='5'>Tidak ada data supplier</td></tr>";
+    }
+    ?>
 </table>
-
-<!-- Add Supplier Modal -->
-<div class="modal fade" id="addSupplierModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="process/add_supplier.php" method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title">Tambah Supplier</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label>Nama Supplier</label>
-                        <input type="text" name="nama_supplier" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label>Alamat</label>
-                        <textarea name="alamat" class="form-control" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label>Telepon</label>
-                        <input type="text" name="telepon" class="form-control" required>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
 <?php include 'includes/footer.php'; ?>
